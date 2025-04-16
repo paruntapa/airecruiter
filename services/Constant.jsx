@@ -1,4 +1,4 @@
-import { ChartBar, LayoutDashboard, Settings, UserIcon } from "lucide-react";
+import { BriefcaseBusinessIcon, ChartBar, Code2Icon, LayoutDashboard, PowerIcon, Puzzle, Settings, StretchHorizontalIcon, User2Icon, UserIcon } from "lucide-react";
 
 export const SidebarOptions = [
     {
@@ -26,4 +26,27 @@ export const SidebarOptions = [
         href: '/settings',
         icon: Settings,
     }
+]
+
+export const InterviewType = [
+    {
+        title: 'Technical',
+        icon: Code2Icon,
+    },
+    {
+        title: 'Behavioral',
+        icon: User2Icon
+    },
+    {
+        title: 'Experience',
+        icon: BriefcaseBusinessIcon,
+    },
+    {
+        title: 'Problem Solving',
+        icon: Puzzle,
+    },
+    {
+        title: 'Leadership',
+        icon: StretchHorizontalIcon,
+    },
 ]

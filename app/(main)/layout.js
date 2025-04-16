@@ -3,9 +3,11 @@ import DashboardProvider from './provider'
 
 const DashboardLayout = ({ children}) => {
   return (
-    <div>
+    <div className='bg-gray-100'>
         <DashboardProvider>
-        { children}
+          <div>
+          { children }
+          </div>
         </DashboardProvider>
     </div>
   )
