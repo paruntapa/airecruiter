@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 import FormContainer from './_components/FormContainer'
 import { toast } from 'sonner'
+import QuestionList from './_components/QuestionList'
 
 const CreateInterview = () => {
     const router = useRouter()
@@ -32,7 +33,7 @@ const CreateInterview = () => {
         </div>
         <Progress value={step * 33.33}  className='my-5'/>
         {step ==1 ? <FormContainer onHandleInputChange={onHandleInputChange} GoToNext={()=> onGoToNext()}/>
-        : step == 2 ? <QuestionList/> : null}
+        : step == 2 ? <QuestionList formData={formdata}/> : null}
     </div>
   )
 }
