@@ -1,7 +1,7 @@
 "use client"
 import { InterviewDataContext } from '@/context/InterviewDataContext'
 import { Mic, Phone, Timer } from 'lucide-react'
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Vapi from "@vapi-ai/web";
 import AlertConfirmation from './_components/AlertConfirmation';
 
@@ -23,7 +23,7 @@ const StartInterview = () => {
 
   const assistantOptions = {
           name: "AI Recruiter",
-          firstMessage: `Hi {{userName}}, how are you? Ready for your interview on ${interviewInfo?.interviewData?.jobPosition}?`, 
+          firstMessage: `Hi ${interviewInfo?.userName}, how are you? Ready for your interview on ${interviewInfo?.interviewData?.jobPosition}?`, 
           transcriber: {
           provider: "deepgram",
           model: "nova-2",
@@ -81,10 +81,11 @@ const StartInterview = () => {
     setActiveUser(false)
   })
 
-  vapi.on('speech-end', ()=> {
-    console.log('Assistent speech has ended.'),
-    setActiveUser(true)
+  vapi.on('call-end', ()=> {
+    console.log('Call has ended.'),
+    toast('Interview Ended')
   })
+
 
   return (
     <div className='p-20 lg:px-48 xl:px-56'>
@@ -97,11 +98,19 @@ const StartInterview = () => {
 
       <div className='grid grid-cols-1 md:grid-cols-2 gap-7 mt-5'>
         <div className='bg-white p-20 rounded-lg border flex-col gap-3 flex items-center justify-center'>
-          <h2 className='font-bold'>Interviewer</h2>
-          <h2>AI Recruiter</h2>
+          <h2 className='font-bold relative'>
+          {!activeUser && <span className='inset-0 absolute rounded-full bg-orange-500 opacity-75 animate-ping'/>}
+            Interviewer
+          </h2>
+          <h2>
+            AI Recruiter
+          </h2>
         </div>
         <div className='bg-white p-20 rounded-lg border flex flex-col gap-3 items-center  justify-center'>
-          <h2 className='text-2xl bg-primary text-white p-3 px-5 rounded-full'>{interviewInfo?.userName[0].toUpperCase()}</h2>
+          <h2 className='text-2xl bg-primary text-white p-3 px-5 rounded-full relative'>
+            {!activeUser && <span className='inset-0 absolute rounded-full bg-orange-500 opacity-75 animate-ping'/>}
+            {interviewInfo?.userName[0].toUpperCase()}
+            </h2>
           <h2>{interviewInfo?.userName}</h2>
         </div>
       </div>
