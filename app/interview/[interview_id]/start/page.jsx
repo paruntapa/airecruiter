@@ -9,6 +9,33 @@ const StartInterview = () => {
   const { interviewInfo, setInterviewInfo } = useContext(InterviewDataContext)
   const vapi = new Vapi(process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY);
   const [activeUser, setActiveUser] = useState(false)
+  const [conversation, setConversation] = useState()
+
+  let seconds = 0;
+  let minutes = 0;
+  let hours = 0;
+
+  useEffect(() => {
+    function updateTimer() {
+      seconds++;
+      if (seconds === 60) {
+        seconds = 0;
+        minutes++;
+        if (minutes === 60) {
+          minutes = 0;
+          hours++;
+        }
+      }
+  
+      const formattedTime = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+      document.getElementById('timer').textContent = formattedTime;
+    }
+  
+    setInterval(updateTimer, 1000);
+    clearInterval(updateTimer);
+  }, [seconds]);
+
+  
 
   useEffect(()=> {
     interviewInfo && startCall();
@@ -84,13 +111,28 @@ const StartInterview = () => {
   vapi.on('call-end', ()=> {
     console.log('Call has ended.'),
     toast('Interview Ended')
+    generateFeedback();
   })
 
+  vapi.on('message', (mgs)=> {
+    console.log(mgs?.conversation),
+    setConversation(mgs?.conversation)
+  })
+
+  const generateFeedback = async () => {
+    const result = await axios.post('api/ai-feedback', {
+      conversation: conversation
+    })
+    console.log(result?.data)
+    const content = result.data.content;
+    const FINAL_CONTENT = content.replace('```json', '').replace('```', '')
+    console.log(FINAL_CONTENT)
+  }
 
   return (
     <div className='p-20 lg:px-48 xl:px-56'>
       <h2 className='font-bold text-xl flex justify-between'>AI Interview Session
-        <span className='flex gap-2 items-center'>
+        <span id="timer" className='flex gap-2 items-center'>
           <Timer/>
           00:00:00
         </span>

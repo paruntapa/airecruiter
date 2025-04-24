@@ -14,6 +14,7 @@ const Interview = () => {
   const [interviewData, setInterviewData] = useState({})
   const [loading, setLoading ] = useState(false)
   const [userName, setUserName] = useState()
+  const [userEmail, setUserEmail] = useState()
   const { interviewInfo, setInterviewInfo } = useContext(InterviewDataContext)
   const router = useRouter()
 
@@ -50,6 +51,7 @@ const Interview = () => {
 
     setInterviewInfo({
       userName: userName,
+      userEmail: userEmail,
       interviewData: interview[0],
     })
     router.push(`/interview/${interview_id}/start`) 
@@ -68,6 +70,10 @@ const Interview = () => {
         <div className='w-[300px] mt-6'>
           <h2 className='font-medium'>Enter your full Name</h2>
           <Input type='text' placeholder='e.g. John Doe' onChange={(e) => setUserName(e.target.value)} />
+        </div>
+        <div className='w-[300px] mt-6'>
+          <h2 className='font-medium'>Enter your Email</h2>
+          <Input type='text' placeholder='e.g. John@gmail.com' onChange={(e) => setUserEmail(e.target.value)} />
         </div>
 
         <div className='p-3 bg-orange-100 flex gap-4 rounded-xl mt-6'>
