@@ -4,12 +4,16 @@ import { Mic, Phone, Timer } from 'lucide-react'
 import React, { useContext, useEffect, useState } from 'react'
 import Vapi from "@vapi-ai/web";
 import AlertConfirmation from './_components/AlertConfirmation';
+import { supabase } from '@/services/supabaseClient';
+import { useParams, useRouter } from 'next/navigation';
 
 const StartInterview = () => {
   const { interviewInfo, setInterviewInfo } = useContext(InterviewDataContext)
   const vapi = new Vapi(process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY);
   const [activeUser, setActiveUser] = useState(false)
   const [conversation, setConversation] = useState()
+  const {interview_id} = useParams();
+  const router = useRouter()
 
   let seconds = 0;
   let minutes = 0;
@@ -98,26 +102,41 @@ const StartInterview = () => {
     vapi.stop()
   }
 
-  vapi.on('call-start', ()=> {
-    console.log('Call has started'),
-    toast('Call Connected...')
-  })
+  useEffect(()=> {
+    const handleMessage = (msg) => {
+      console.log(msg)
+      if(msg?.conversation) {
+        const convoString = JSON.stringify(msg?.conversation)
+        setConversation(convoString)
+      }
+    }
 
-  vapi.on('speech-start', ()=> {
-    console.log('Assistent speech has started'),
-    setActiveUser(false)
-  })
+    vapi.on("message", handleMessage)
+    
+    vapi.on('call-start', ()=> {
+      console.log('Call has started'),
+      toast('Call Connected...')
+    })
 
-  vapi.on('call-end', ()=> {
-    console.log('Call has ended.'),
-    toast('Interview Ended')
-    generateFeedback();
-  })
+    vapi.on('speech-start', ()=> {
+      console.log('Assistent speech has started'),
+      setActiveUser(false)
+    })
 
-  vapi.on('message', (mgs)=> {
-    console.log(mgs?.conversation),
-    setConversation(mgs?.conversation)
-  })
+    vapi.on('call-end', ()=> {
+      console.log('Call has ended.'),
+      toast('Interview Ended')
+      generateFeedback();
+    })
+
+
+    return () => {
+      vapi.off("message", handleMessage)
+      vapi.off("call-start")
+      vapi.off("speech-start")
+      vapi.off("call-end")
+    }
+  }, [])
 
   const generateFeedback = async () => {
     const result = await axios.post('api/ai-feedback', {
@@ -126,7 +145,21 @@ const StartInterview = () => {
     console.log(result?.data)
     const content = result.data.content;
     const FINAL_CONTENT = content.replace('```json', '').replace('```', '')
-    console.log(FINAL_CONTENT)
+    
+    const {data, error } = await supabase
+    .from('interview-feedback')
+    .insert([
+      {
+        userName: interviewInfo?.userName, 
+       userEmail: interviewInfo?.userEmail,
+       interview_id: interview_id,
+       feedback: JSON.parse(FINAL_CONTENT),
+       recommended: false,
+      }
+    ])
+    .select()
+
+    router.replace('/interview/'+interview_id+'/completed')
   }
 
   return (
