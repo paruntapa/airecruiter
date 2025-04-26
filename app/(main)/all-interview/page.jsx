@@ -4,13 +4,12 @@ import { Button } from '@/components/ui/button'
 import { supabase } from '@/services/supabaseClient'
 import { Video } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
-import InterviewCard from './InterviewCard'
-import { toast } from 'sonner'
+import InterviewCard from '../dashboard/_components/InterviewCard'
 
-const LatestInterviewList = () => {
+const page = () => {
     const [interviewList, setInterviewList] = useState([])
     const {user} = useUser()
-    console.log("user", user)
+    console.log(user)
 
     useEffect(() => {
       user && GetInterviewList();
@@ -23,8 +22,7 @@ const LatestInterviewList = () => {
       .order('id', { ascending: false })
       .limit(6)
 
-
-      console.log("interview", interviews)
+      console.log(interviews)
     }
 
    
@@ -56,4 +54,4 @@ const LatestInterviewList = () => {
   )
 }
 
-export default LatestInterviewList
+export default page

@@ -29,7 +29,7 @@ const StartInterview = () => {
           minutes = 0;
           hours++;
         }
-      }
+    }
   
       const formattedTime = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
       document.getElementById('timer').textContent = formattedTime;

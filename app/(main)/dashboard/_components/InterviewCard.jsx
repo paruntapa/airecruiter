@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button'
 import { Send } from 'lucide-react'
 import React from 'react'
 
-const InterviewCard = ({interview}) => {
+const InterviewCard = ({interview, viewDetail}) => {
     const url = process.env.NEXT_PUBLIC_APP_URL+'/'+interview?.interview_id
 
     const copyLink = () => {
@@ -20,12 +20,17 @@ const InterviewCard = ({interview}) => {
             <h2 className='text-sm'>{moment(interview?.created_at).format('DD MMM yyy')}</h2> 
         </div>
         <h2 className='mt-3 font-bold text-lg'>{interview?.jobPosition}</h2>
-        <h2 className='mt-2'>{interview?.duration}</h2>
+        <h2 className='mt-2 flex justify-between text-gray-500'>{interview?.duration}
+            <span className='text-green-700'>{interview['interview-feedback']?.length} Candidates</span>
+        </h2>
+        {!viewDetail ? 
         <div className='flex gap-3 w-full mt-5'>
             <Button variant={'outline'} onClick={() => copyLink()}><Send/> Copy Link</Button>
             <Button className={'w-full'} onClick={()=> onSend()}><Send/> Send</Button>
-
         </div>
+        : 
+        <Button className={'mt-5 w-full'} variant={'outline'}>View Details</Button>
+        }
     </div>
   )
 }
