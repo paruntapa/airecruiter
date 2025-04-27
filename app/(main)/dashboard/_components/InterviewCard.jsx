@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button'
 import { Send } from 'lucide-react'
+import Link from 'next/link'
 import React from 'react'
 
 const InterviewCard = ({interview, viewDetail}) => {
@@ -29,7 +30,9 @@ const InterviewCard = ({interview, viewDetail}) => {
             <Button className={'w-full'} onClick={()=> onSend()}><Send/> Send</Button>
         </div>
         : 
+        <Link href={`/scheduled-interview/${interview?.interview_id}/details`}>
         <Button className={'mt-5 w-full'} variant={'outline'}>View Details</Button>
+        </Link>
         }
     </div>
   )
