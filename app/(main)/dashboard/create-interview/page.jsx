@@ -2,24 +2,39 @@
 import { Progress } from '@/components/ui/progress'
 import { ArrowLeft } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import FormContainer from './_components/FormContainer'
 import { toast } from 'sonner'
 import QuestionList from './_components/QuestionList'
 import InterviewLink from './_components/InterviewLink'
+import { useUser } from '@/app/provider'
 
 const CreateInterview = () => {
     const router = useRouter()
     const [step, setStep] = useState(1)
     const [formdata, setFormdata] = useState({})
     const [interviewId, setInterviewId] = useState()
+    const { user } = useUser();
     const onHandleInputChange = (field, value) => {
       setFormdata(prev => ({...prev, [field]: value}))
 
       console.log(formdata)
     }
 
+    useEffect(() => {
+      const origin = window.location.origin;
+      console.log('Client URL:', origin);
+    }, []);
+
     const onGoToNext = () => {
+      if(user?.credits <= 0){
+        toast.error('You have no credits left', {
+          duration: 3000,
+          position: 'top-right',
+          icon: '🚨',
+          })
+        return;
+      }
         if(!formdata?.jobPosition|| !formdata?.jobDescription || !formdata?.duration || !formdata?.type){
           console.log('first')
           toast('Please fill all the fields')
@@ -41,7 +56,7 @@ const CreateInterview = () => {
         <Progress value={step * 33.33}  className='my-5'/>
         {step ==1 ? <FormContainer onHandleInputChange={onHandleInputChange} GoToNext={()=> onGoToNext()}/>
         : step == 2 ? <QuestionList formData={formdata} onCreateLink={(interview_id) => onCreateLink(interview_id)}/> 
-        : step === 3 ? <InterviewLink  interview_Id={interviewId} formData={formdata} /> : null}
+        : step === 3 ? <InterviewLink  interview_Id={interviewId} origin={origin} formData={formdata} /> : null}
     </div>
   )
 }

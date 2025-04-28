@@ -8,8 +8,8 @@ import CandidateList from "./_components/CandidateList";
 
 function InterviewDetailPage() {
   const { interview_id } = useParams();
-  const {user} = useUser();
-  const [interviewDetail, setInterviewDetail] = useState(null);
+  const { user } = useUser();
+  const [ interviewDetail, setInterviewDetail ] = useState(null);
 
   useEffect(() => {
     user&&GetInterviewDetails();

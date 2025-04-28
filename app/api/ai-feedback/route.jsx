@@ -1,4 +1,5 @@
 import { FEEDBACK_PROMPT } from "@/services/Constant"
+import { NextResponse } from "next/server"
 import OpenAI from "openai"
 
 export async function POST(request) {   

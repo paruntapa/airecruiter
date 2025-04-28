@@ -5,16 +5,31 @@ import Link from 'next/link'
 import React from 'react'
 import { toast } from 'sonner'
 
-const InterviewLink = ({ interview_Id, formData }) => {
-    const url = process.env.NEXT_PUBLIC_HOST_URL + '/' + interview_Id
+const InterviewLink = ({ interview_Id, formData, origin }) => {
 
+    const url = origin + '/interview/' + interview_Id
+    
     const GetInterviewUrl = () => {
         return url;
     }
 
     const OnCopyLink = async () => {
-        await navigator.clipboard.writeText(url)
-        toast.success('Link Copied')
+        try {
+            if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(url);
+              } else {
+                const textArea = document.createElement("textarea");
+                textArea.value = url;
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select({preventScroll: true});
+                document.execCommand('copy');
+                textArea.remove();
+              }
+              toast.success('Link Copied');
+        } catch (error) {
+            toast.error('Failed to copy link')
+        }
     }
   return (
     <div className='flex flex-col items-center justify-center gap-5 mt-5 bg-orange-100 rounded-xl p-5 border-2 border-primary'> 

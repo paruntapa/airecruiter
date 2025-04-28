@@ -55,6 +55,20 @@ const CandidateFeedbackDialog = ({candidate}) => {
                         </div>
                     </div>
                 </div>
+                <div className='mt-5'>
+                    <h2 className='font-bold'>Performance Summary</h2>
+                    <div className='mt-3 p-5 rounded-md bg-secondary my-3'>
+                        {feedback?.summary?.map((summary, idx)=> (
+                            <p key={idx} className='text-sm'>{summary}</p>
+                        ))}
+                    </div>
+                </div>
+
+                <div className={`p-5 mt-8 flex justify-between items-center ${feedback?.Recommendation == 'No' ? 'bg-red-500' : 'bg-green-500'} rounded-md`}>
+                    <h2 className={`font-bold ${feedback?.Recommendation == 'No' ? 'text-red-500' : 'text-green-500'}`}>Recommendation</h2>
+                    <p className={`${feedback?.Recommendation == 'No' ? 'text-red-500' : 'text-green-500'}`}>{feedback?.Recommendation}</p>
+                </div>
+                <Button className={`${feedback?.Recommendation == 'No' ? 'bg-red-700' : 'bg-green-700'}`}>Send Message</Button>
             </div>
         </DialogDescription>
     </DialogHeader>
