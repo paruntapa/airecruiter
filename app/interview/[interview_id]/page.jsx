@@ -41,7 +41,7 @@ const Interview = () => {
       setLoading(false)
     } catch (error) {
       setLoading(false)
-      console.log(error.message)
+      console.log(error, "Error while getting data from DB")
       toast.error(error.message)
     }
   }
