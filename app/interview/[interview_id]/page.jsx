@@ -15,14 +15,16 @@ const Interview = () => {
   const [loading, setLoading ] = useState(false)
   const [userName, setUserName] = useState()
   const [userEmail, setUserEmail] = useState()
-  const { interviewInfo, setInterviewInfo } = useContext(InterviewDataContext)
+  const { setInterviewInfo } = useContext(InterviewDataContext)
   const router = useRouter()
 
   useEffect(() => {
+    console.log(interview_id, "interview_id")
     interview_id && GetInterviewDetails()
   }, [interview_id])
 
   const GetInterviewDetails = async () => {
+    console.log(supabase, "supabase")
     setLoading(true)
     try {
       let { data: interview, error } = await supabase
@@ -58,7 +60,7 @@ const Interview = () => {
     })
 
     router.push(`/interview/${interview_id}/start`) 
-    
+
     setLoading(false)
 
   }
