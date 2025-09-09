@@ -14,7 +14,6 @@ const QuestionList = ({formData, onCreateLink}) => {
   const [questionList, setQuestionList] = useState()
   const {user} = useUser()
   const [saveLoading, setSaveLoading] = useState(false)
-  const [deductions, setDeductions] = useState()
     useEffect(()=> {
         if(formData) {
             GenerateQuestionList();
@@ -55,22 +54,21 @@ const QuestionList = ({formData, onCreateLink}) => {
       .select()
 
       if (data) {
-      const {data: Deduction, error } =  await supabase
+      const {data, error } =  await supabase
         .from('Users')
         .update({ credits: Number(user?.credits) - 1 })
         .eq('email', user?.email)
         .select()
-
-      setDeductions(Deduction)
+        if (data) {
+          setSaveLoading(false)
+          onCreateLink(interview_id)
+        } else if (error) {
+          console.error("error in QuestionLink", error)
+          setSaveLoading(false)
+        }
       }
-      if (deductions) {
-        setSaveLoading(false)
-      } else {
-        console.error("Failed to save in DB")
-      }
-          
       
-      onCreateLink(interview_id)   
+        
     }
   return (
     <div>

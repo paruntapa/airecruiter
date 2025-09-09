@@ -29,7 +29,7 @@ const Interview = () => {
     try {
       let { data: interview, error } = await supabase
       .from('interviews')
-      .select('jobPosition,jobDescription, duration,type')
+      .select('jobPosition, jobDescription, duration, type')
       .eq('interview_id', interview_id)
       console.log(error, "error")
 
