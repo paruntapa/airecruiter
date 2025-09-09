@@ -7,15 +7,15 @@ import { useRouter } from 'next/navigation'
 import React, { useEffect } from 'react'
 
 const Login = () => {
-  const { isAuthenticated, loading } = useAuth()
+  const { isAuthenticated, loading, initialized } = useAuth()
   const router = useRouter()
 
   useEffect(() => {
     // Redirect to dashboard if already authenticated
-    if (!loading && isAuthenticated) {
+    if (initialized && !loading && isAuthenticated) {
       router.push('/dashboard')
     }
-  }, [loading, isAuthenticated, router])
+  }, [loading, isAuthenticated, initialized, router])
 
   const signInWithGoogle = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
@@ -30,7 +30,7 @@ const Login = () => {
   }
 
   // Show loading while checking auth status
-  if (loading) {
+  if (loading || !initialized) {
     return (
       <div className="flex items-center justify-center h-screen">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>

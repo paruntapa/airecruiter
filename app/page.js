@@ -6,14 +6,14 @@ import { useEffect } from "react";
 
 export default function Home() {
 	const router = useRouter();
-	const { isAuthenticated, loading } = useAuth();
+	const { isAuthenticated, loading, initialized } = useAuth();
 
 	useEffect(() => {
 		// Redirect authenticated users to dashboard
-		if (!loading && isAuthenticated) {
+		if (initialized && !loading && isAuthenticated) {
 			router.push("/dashboard");
 		}
-	}, [loading, isAuthenticated, router]);
+	}, [loading, isAuthenticated, initialized, router]);
 
 	const handleClick = () => {
 		if (isAuthenticated) {
@@ -24,7 +24,7 @@ export default function Home() {
 	};
 
 	// Show loading while checking auth status
-	if (loading) {
+	if (loading || !initialized) {
 		return (
 			<div className="flex items-center justify-center h-screen">
 				<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>

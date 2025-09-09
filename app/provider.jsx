@@ -2,40 +2,27 @@
 
 import { UserDetailContext } from '@/context/UserDetailContext'
 import { supabase } from '@/services/supabaseClient'
+import { useAuth } from '@/hooks/useAuth'
 import React, { useContext, useEffect, useState } from 'react'
 
 const Provider = ({children}) => {
     const [user, setUsers] = useState(null)
-    const [loading, setLoading] = useState(true)
+    const [userLoading, setUserLoading] = useState(false)
+    const { user: authUser, isAuthenticated, initialized } = useAuth()
 
     useEffect(() => {
-        // Listen for auth state changes
-        const { data: { subscription } } = supabase.auth.onAuthStateChange(
-            async (event, session) => {
-                if (session?.user) {
-                    await createOrGetUser(session.user)
-                } else {
-                    setUsers(null)
-                }
-                setLoading(false)
-            }
-        )
-
-        // Get initial session
-        const getInitialSession = async () => {
-            const { data: { session } } = await supabase.auth.getSession()
-            if (session?.user) {
-                await createOrGetUser(session.user)
-            }
-            setLoading(false)
+        if (initialized && isAuthenticated && authUser) {
+            createOrGetUser(authUser)
+        } else if (initialized && !isAuthenticated) {
+            setUsers(null)
+            setUserLoading(false)
         }
-
-        getInitialSession()
-
-        return () => subscription.unsubscribe()
-    }, [])
+    }, [authUser, isAuthenticated, initialized])
 
     const createOrGetUser = async (authUser) => {
+        if (!authUser?.email) return
+        
+        setUserLoading(true)
         try {
             // Check if user exists in database
             const { data: existingUsers, error: fetchError } = await supabase
@@ -45,6 +32,7 @@ const Provider = ({children}) => {
 
             if (fetchError) {
                 console.error('Error fetching user:', fetchError)
+                setUserLoading(false)
                 return
             }
 
@@ -64,6 +52,7 @@ const Provider = ({children}) => {
 
                 if (insertError) {
                     console.error('Error creating user:', insertError)
+                    setUserLoading(false)
                     return
                 }
 
@@ -73,11 +62,19 @@ const Provider = ({children}) => {
             }
         } catch (error) {
             console.error('Error in createOrGetUser:', error)
+        } finally {
+            setUserLoading(false)
         }
     }
 
     return (
-        <UserDetailContext.Provider value={{ user, setUsers, loading }}>
+        <UserDetailContext.Provider value={{ 
+            user, 
+            setUsers, 
+            loading: userLoading,
+            authUser,
+            isAuthenticated 
+        }}>
             <div>{children}</div>
         </UserDetailContext.Provider>
     )
