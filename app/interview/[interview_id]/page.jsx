@@ -31,6 +31,7 @@ const Interview = () => {
       .from('interviews')
       .select('jobPosition,jobDescription, duration,type')
       .eq('interview_id', interview_id)
+      console.log(error, "error")
 
       setInterviewData(interview[0])  
       if(interview.length === 0) {
@@ -40,6 +41,7 @@ const Interview = () => {
       setLoading(false)
     } catch (error) {
       setLoading(false)
+      console.log(error.message)
       toast.error(error.message)
     }
   }
@@ -94,10 +96,11 @@ const Interview = () => {
           </div>
         </div>
 
-        <Button 
+        <Button
         disabled={loading || !userName}
         onClick={() => onJoinInterview()}
         className='mt-6 font-bold'><Video className='h-4 w-4' /> {loading && <Loader2Icon className='animate-spin'/>} Start Interview</Button>
+        {console.log(loading, userName)} 
       </div>
     </div>
   )
