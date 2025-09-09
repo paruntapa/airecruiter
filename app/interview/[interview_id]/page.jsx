@@ -48,6 +48,8 @@ const Interview = () => {
     .from('interviews')
     .select('*')
     .eq('interview_id', interview_id)
+    console.log(error, "error")
+    console.log(interview, "interview")
 
     setInterviewInfo({
       userName: userName,
