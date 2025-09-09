@@ -91,7 +91,7 @@ const Interview = () => {
         <Button 
         disabled={loading || !userName}
         onClick={() => onJoinInterview()}
-        className='mt-6 font-bold'><Video className='h-4 w-4' /> {loading && <Loader2Icon/>} Start Interview</Button>
+        className='mt-6 font-bold'><Video className='h-4 w-4' /> {loading && <Loader2Icon className='animate-spin'/>} Start Interview</Button>
       </div>
     </div>
   )

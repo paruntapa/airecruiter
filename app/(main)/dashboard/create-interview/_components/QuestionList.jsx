@@ -54,14 +54,12 @@ const QuestionList = ({formData, onCreateLink}) => {
       .select()
 
 
-      const userUpdate= await supabase
+      await supabase
       .from('Users')
       .update({ credits: Number(user?.credits) - 1 })
       .eq('email', user?.email)
       .select()
           
-      console.log(userUpdate)
-
       setSaveLoading(false)
       
       onCreateLink(interview_id)   
@@ -85,7 +83,7 @@ const QuestionList = ({formData, onCreateLink}) => {
       }
 
       <div className='flex gap-5 justify-end mt-5'>
-        <Button onClick={()=> onFinish()} disabled={saveLoading}>
+        <Button onClick={()=> onFinish()} disabled={loading}>
           {saveLoading && <Loader2 className='animate-spin'/>} 
           Create Interview Link & Finish 
           </Button>
