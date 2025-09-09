@@ -56,7 +56,9 @@ const Interview = () => {
       userEmail: userEmail,
       interviewData: interview[0],
     })
+
     router.push(`/interview/${interview_id}/start`) 
+    
     setLoading(false)
 
   }
