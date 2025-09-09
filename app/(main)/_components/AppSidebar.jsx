@@ -10,15 +10,22 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
   } from "@/components/ui/sidebar"
-import { Plus} from 'lucide-react'
+import { Plus, LogOut} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { SidebarOptions } from '@/services/Constant'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useAuth } from '@/hooks/useAuth'
+import { useUser } from '@/app/provider'
 
 const AppSidebar = () => {
-
   const path = usePathname()
+  const { signOut } = useAuth()
+  const { user } = useUser()
+
+  const handleSignOut = async () => {
+    await signOut()
+  }
 
   return (
     <Sidebar>
@@ -43,7 +50,26 @@ const AppSidebar = () => {
       </SidebarGroup>
       <SidebarGroup />
     </SidebarContent>
-    <SidebarFooter />
+    <SidebarFooter>
+      <div className='p-4 space-y-2'>
+        {user && (
+          <div className='flex items-center space-x-2 p-2 bg-gray-50 rounded-lg'>
+            <div className='text-sm'>
+              <p className='font-medium text-gray-900'>{user.name}</p>
+              <p className='text-gray-500 truncate'>{user.email}</p>
+            </div>
+          </div>
+        )}
+        <Button 
+          variant="outline" 
+          className='w-full' 
+          onClick={handleSignOut}
+        >
+          <LogOut className='w-4 h-4 mr-2' />
+          Sign Out
+        </Button>
+      </div>
+    </SidebarFooter>
   </Sidebar>
   )
 }

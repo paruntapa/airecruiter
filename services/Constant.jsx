@@ -8,23 +8,8 @@ export const SidebarOptions = [
     },
     {
         name: 'Interviews',
-        href: '/interviews',
+        href: '/all-interview',
         icon: ChartBar
-    },
-    {
-        name: 'Candidates',
-        href: '/candidates',
-        icon: UserIcon,
-    },
-    {
-        name: 'Billing',
-        href: '/billing',
-        icon: ChartBar,
-    },
-    {
-        name: 'Settings',
-        href: '/settings',
-        icon: Settings,
     }
 ]
 

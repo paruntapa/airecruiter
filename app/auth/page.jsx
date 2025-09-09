@@ -2,15 +2,45 @@
 
 import { Button } from '@/components/ui/button'
 import { supabase } from '@/services/supabaseClient'
-import React from 'react'
+import { useAuth } from '@/hooks/useAuth'
+import { useRouter } from 'next/navigation'
+import React, { useEffect } from 'react'
 
 const Login = () => {
+  const { isAuthenticated, loading } = useAuth()
+  const router = useRouter()
+
+  useEffect(() => {
+    // Redirect to dashboard if already authenticated
+    if (!loading && isAuthenticated) {
+      router.push('/dashboard')
+    }
+  }, [loading, isAuthenticated, router])
 
   const signInWithGoogle = async () => {
-    const {error} = await supabase.auth.signInWithOAuth({provider:'google'})
-    if(error){
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/dashboard`
+      }
+    })
+    if (error) {
       console.error(error.message)
     }
+  }
+
+  // Show loading while checking auth status
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+      </div>
+    )
+  }
+
+  // Don't show login form if already authenticated
+  if (isAuthenticated) {
+    return null
   }
 
   return (
